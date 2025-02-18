@@ -24,9 +24,9 @@ const createUserProfile = async (req, res) => {
 // Find a user profile by user Id
 const findProfileByUserId = async (req, res) => {
     try {
-        const { user_id } = req.params;
+        const { userId } = req.params;
         
-        const result = await User.findByUserId(user_id);
+        const result = await User.findByUserId(userId);
 
         if (!result || result.length === 0) {
             return res.status(404).json({ message: 'Profile not found' });

@@ -21,8 +21,13 @@ const addUserToSharedAccount = async (req, res) => {
     try {
         const { code } = req.query;
         const { user2Id, timestamp } = req.body;
+
+        if (!code || !user2Id || !timestamp) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
         await SharedAccount.updateAccountByInviteCode(code, { 'user2_id': user2Id, 'updated_at': timestamp });
-        res.status(204).json({ message: 'User added to the shared account successfully'})
+        res.status(200).json({ message: 'User added to the shared account successfully'})
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

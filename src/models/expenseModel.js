@@ -21,6 +21,7 @@ const Expense = {
         if (data.length > 0) {
             return data.map((expense) => ({
                 sharedAccountId: expense.shared_account_id,
+                userId: expense.user_id,
                 date: expense.date,
                 amount: expense.amount,
                 category: expense.category,
@@ -28,6 +29,18 @@ const Expense = {
                 splitType: expense.split_type,
                 splitDetails: expense.splitDetails,
             }))
+        }
+
+        return data;
+    },
+
+    addExpense: async (expense) => {
+        const { data, error } = await supabase
+            .from('expenses')
+            .insert(expense)
+
+        if(error) {
+            throw new Error(error.message);
         }
 
         return data;

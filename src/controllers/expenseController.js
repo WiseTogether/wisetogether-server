@@ -45,4 +45,30 @@ const fetchAllExpensesById = async (req, res) => {
     }
 }
 
-module.exports = { fetchAllExpensesById };
+const addNewExpense = async (req, res) => {
+
+    const { sharedAccountId, userId, date, amount, category, description, splitType, splitDetails } = req.body;
+
+    if (!userId || !date || !amount || !category) {
+        return res.status(400).json({ error: 'Required fields are missing' });
+    }
+
+    let newExpense = { userId, date, amount, category };
+
+    // Dynamically add the other fields if they are not null or undefined
+    newExpense = Object.assign(newExpense, {
+        ...(sharedAccountId && { sharedAccountId }),
+        ...(description && { description }),
+        ...(splitType && { splitType }),
+        ...(splitDetails && { splitDetails }),
+    });
+
+    try {
+        await Expense.addExpense(newExpense);
+        res.status(201).json({ message: 'New expense added successfully'})
+    } catch(error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+module.exports = { fetchAllExpensesById, addNewExpense };

@@ -8,8 +8,6 @@ const createUserProfile = async (req, res) => {
         const result = await User.createProfile({ user_id, name });
         const newProfile = result[0];
 
-        console.log(result);
-
         res.status(201).json({ 
             message: 'User profile created successfully', 
             profile: {

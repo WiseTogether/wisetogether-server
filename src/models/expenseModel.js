@@ -9,7 +9,7 @@ const Expense = {
 
         const { data, error } = await supabase
             .from('expenses')
-            .select('shared_account_id, date, amount, category, description, split_type, split_details')
+            .select('uuid, shared_account_id, user_id, date, amount, category, description, split_type, split_details')
             .eq(columnName, id)
             .order('date', { ascending: false });
 
@@ -20,6 +20,7 @@ const Expense = {
 
         if (data.length > 0) {
             return data.map((expense) => ({
+                id: expense.uuid,
                 sharedAccountId: expense.shared_account_id,
                 userId: expense.user_id,
                 date: expense.date,
@@ -27,10 +28,10 @@ const Expense = {
                 category: expense.category,
                 description: expense.description,
                 splitType: expense.split_type,
-                splitDetails: expense.splitDetails,
+                splitDetails: expense.split_details,
             }))
         }
-
+        
         return data;
     },
 

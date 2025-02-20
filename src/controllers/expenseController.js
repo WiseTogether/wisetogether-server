@@ -45,30 +45,66 @@ const fetchAllExpensesById = async (req, res) => {
     }
 }
 
-const addNewExpense = async (req, res) => {
+const addNewPersonalExpense = async (req, res) => {
 
-    const { sharedAccountId, userId, date, amount, category, description, splitType, splitDetails } = req.body;
+    const { userId, date, amount, category, description } = req.body;
 
     if (!userId || !date || !amount || !category) {
         return res.status(400).json({ error: 'Required fields are missing' });
     }
 
-    let newExpense = { userId, date, amount, category };
+    let newExpense = { 'user_id':userId, date, amount, category };
 
-    // Dynamically add the other fields if they are not null or undefined
-    newExpense = Object.assign(newExpense, {
-        ...(sharedAccountId && { sharedAccountId }),
-        ...(description && { description }),
-        ...(splitType && { splitType }),
-        ...(splitDetails && { splitDetails }),
-    });
+    if (description) {
+        newExpense.description = description;
+    }
 
     try {
         await Expense.addExpense(newExpense);
-        res.status(201).json({ message: 'New expense added successfully'})
+        res.status(201).json({ message: 'New personal expense added successfully'})
     } catch(error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-module.exports = { fetchAllExpensesById, addNewExpense };
+const addNewSharedExpense = async (req, res) => {
+
+    const { sharedAccountId, userId, date, amount, category, description, splitType, splitDetails } = req.body;
+
+    if (!sharedAccountId || !userId || !date || !amount || !category || !splitType) {
+        return res.status(400).json({ error: 'Required fields are missing' });
+    }
+
+    let newExpense = { 'user_id':userId, 'shared_account_id':sharedAccountId, date, amount, category, 'split_type':splitType };
+    
+    if (description) {
+        newExpense.description = description;
+    }
+    
+    if (splitType === 'equal') {
+        newExpense.split_details = {
+            user1_amount: Math.round(0.50 * amount),
+            user2_amount: Math.round(0.50 * amount)
+        };
+    }
+
+    if (splitType === 'percentage' && splitDetails) {
+        const { user1, user2 } = splitDetails;
+
+        newExpense.split_details = {
+            user1_amount: Math.round((user1 / 100) * amount),
+            user2_amount: Math.round((user2 / 100) * amount)
+        };
+    }
+
+    try {
+        await Expense.addExpense(newExpense);
+        res.status(201).json({ message: 'New shared expense added successfully'})
+    } catch(error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
+
+module.exports = { fetchAllExpensesById, addNewPersonalExpense, addNewSharedExpense };

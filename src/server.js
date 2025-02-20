@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 app.use(express.json());
 
 const corsOptions = {
-    origin: 'https://wisetogether.onrender.com',
+    origin: ['https://wisetogether.onrender.com', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'], 
     allowedHeaders: ['Content-Type'],
     credentials: false,

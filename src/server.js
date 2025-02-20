@@ -9,7 +9,15 @@ const expenseRoutes = require('./routes/expenseRoutes')
 const PORT = process.env.PORT;
 
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+    origin: 'https://wisetogether.onrender.com',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'], 
+    allowedHeaders: ['Content-Type'],
+    credentials: false,
+  };
+  
+app.use(cors(corsOptions));
 
 // API routes
 app.use('/profiles', profileRoutes);

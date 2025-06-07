@@ -1,6 +1,6 @@
 const SharedAccount = {
 
-    createAccount: async (accountData) => {
+    createAccount: async (accountData, supabase) => {
         const { data, error } = await supabase
             .from('shared_accounts')
             .insert(accountData)
@@ -14,7 +14,7 @@ const SharedAccount = {
         return data;
     },
 
-    updateAccountByInviteCode: async(inviteCode, updatedData) => {
+    updateAccountByInviteCode: async(inviteCode, updatedData, supabase) => {
         const { error } = await supabase
             .from('shared_accounts')
             .update(updatedData)

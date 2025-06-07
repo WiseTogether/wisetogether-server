@@ -25,13 +25,15 @@ Backend routes rely solely on client-side auth. No server-side validation of Sup
    - Add `getSupabaseClientWithAuth` function for authenticated operations
    - Centralize Supabase client configuration
 
-4. Updated `sharedAccountModel.js` to:
-   - Accept authenticated Supabase client as parameter
-   - Maintain clean data mapping
+4. Updated all models to accept authenticated Supabase client:
+   - `profileModel.js`: Updated createProfile and findByUserId
+   - `expenseModel.js`: Updated filterById and addExpense
+   - `sharedAccountModel.js`: Updated findByUserId
 
-5. Updated `sharedAccountController.js` to:
-   - Pass authenticated Supabase client to model
-   - Maintain consistent error handling
+5. Updated all controllers to pass authenticated Supabase client:
+   - `profileController.js`: Updated createUserProfile and findProfileByUserId
+   - `expenseController.js`: Updated fetchAllExpensesById, addNewPersonalExpense, and addNewSharedExpense
+   - `sharedAccountController.js`: Updated findSharedAccountByUserId
 
 ### Testing
 To test the implementation:

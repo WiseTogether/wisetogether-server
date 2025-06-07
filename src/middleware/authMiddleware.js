@@ -1,4 +1,4 @@
-const { supabase } = require('../supabaseClient');
+const { getSupabaseClientWithAuth } = require('../supabaseClient');
 
 const verifyToken = async (req, res, next) => {
   try {
@@ -9,18 +9,18 @@ const verifyToken = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
+    const supabase = getSupabaseClientWithAuth(token);
     
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
       return res.status(401).json({ error: 'Invalid token' });
     }
 
-    // Attach user to request object for use in route handlers
     req.user = user;
+    req.supabase = supabase;
     next();
   } catch (error) {
-    console.error('Token verification error:', error);
     res.status(500).json({ error: 'Internal server error during token verification' });
   }
 };

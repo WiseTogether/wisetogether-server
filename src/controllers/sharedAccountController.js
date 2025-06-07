@@ -41,14 +41,14 @@ const findSharedAccountByUserId = async (req, res) => {
             return res.status(400).json({ message: 'User ID is required' });
         }
         
-        const result = await SharedAccount.findByUserId(userId);
+        const result = await SharedAccount.findByUserId(userId, req.supabase);
 
         if (!result || result.length === 0) {
             return res.status(404).json({ message: 'No shared account found for this user' });
         }
 
         const sharedAccount = result[0];
-        res.status(200).json(sharedAccount)
+        res.status(200).json(sharedAccount);
     } catch(error) {
         res.status(500).json({ error: error.message });
     }

@@ -11,16 +11,27 @@ This document outlines the reasoning and technical approach behind selected chan
 Backend routes rely solely on client-side auth. No server-side validation of Supabase access token.
 
 ### Implementation
-1. Created `authMiddleware.js` with `verifyToken` middleware function that:
-   - Extracts Bearer token from Authorization header
-   - Validates token using Supabase's `auth.getUser()`
-   - Attaches verified user to request object
-   - Returns appropriate error responses for invalid/missing tokens
+1. Created `authMiddleware.js` with:
+   - `verifyToken` middleware to validate JWT tokens
+   - Uses `getSupabaseClientWithAuth` for authenticated requests
+   - Proper error handling for missing/invalid tokens
 
 2. Updated `server.js` to:
    - Import and apply middleware to all protected routes
    - Add 'Authorization' to allowed CORS headers
    - Apply middleware before route handlers
+
+3. Updated `supabaseClient.js` to:
+   - Add `getSupabaseClientWithAuth` function for authenticated operations
+   - Centralize Supabase client configuration
+
+4. Updated `sharedAccountModel.js` to:
+   - Accept authenticated Supabase client as parameter
+   - Maintain clean data mapping
+
+5. Updated `sharedAccountController.js` to:
+   - Pass authenticated Supabase client to model
+   - Maintain consistent error handling
 
 ### Testing
 To test the implementation:

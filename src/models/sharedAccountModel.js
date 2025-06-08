@@ -1,8 +1,6 @@
-const { supabase } = require('../supabaseClient')
-
 const SharedAccount = {
 
-    createAccount: async (accountData) => {
+    createAccount: async (accountData, supabase) => {
         const { data, error } = await supabase
             .from('shared_accounts')
             .insert(accountData)
@@ -16,7 +14,7 @@ const SharedAccount = {
         return data;
     },
 
-    updateAccountByInviteCode: async(inviteCode, updatedData) => {
+    updateAccountByInviteCode: async(inviteCode, updatedData, supabase) => {
         const { error } = await supabase
             .from('shared_accounts')
             .update(updatedData)
@@ -27,24 +25,23 @@ const SharedAccount = {
         }
     },
 
-    findByUserId: async (userId) => {
+    findByUserId: async (userId, supabase) => {
         const { data, error } = await supabase
             .from('shared_accounts')
             .select('uuid, user1_id, user2_id, unique_code')
             .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
 
         if (error) {
-            console.error('Error fetching shared account:', error);
             return null;
         }
 
-        if (data.length > 0) {
+        if (data && data.length > 0) {
             return data.map((sharedAccount) => ({
                 uuid: sharedAccount.uuid,
                 user1Id: sharedAccount.user1_id,
                 user2Id: sharedAccount.user2_id,
                 uniqueCode: sharedAccount.unique_code,
-            }))
+            }));
         }
 
         return data;

@@ -9,21 +9,21 @@ const fetchAllExpensesById = async (req, res) => {
             return res.status(400).json({ error: 'User ID is required' });
         }
 
-        const personalExpenses = await Expense.filterById(userId, 'user');
+        const personalExpenses = await Expense.filterById(userId, 'user', req.supabase);
         let sharedExpenses = [];
 
         if (sharedAccountId) {
-            sharedExpenses = await Expense.filterById(sharedAccountId, 'sharedAccount');
+            sharedExpenses = await Expense.filterById(sharedAccountId, 'sharedAccount', req.supabase);
         }
 
         if (!personalExpenses || !sharedExpenses) {
-            return res.status(404).json({ message: 'No expenses found for the sepcified user or shared account' });
+            return res.status(404).json({ message: 'No expenses found for the specified user or shared account' });
         }
 
-        const allExpenses = [...personalExpenses, ...sharedExpenses]
+        const allExpenses = [...personalExpenses, ...sharedExpenses];
 
         if (allExpenses.length === 0) {
-            return res.status(200).json(allExpenses)
+            return res.status(200).json(allExpenses);
         }
 
         // initialize an empty map to automatically handle uniqueness
@@ -60,7 +60,7 @@ const addNewPersonalExpense = async (req, res) => {
     }
 
     try {
-        await Expense.addExpense(newExpense);
+        await Expense.addExpense(newExpense, req.supabase);
         res.status(201).json({ message: 'New personal expense added successfully'})
     } catch(error) {
         res.status(500).json({ error: error.message });
@@ -98,7 +98,7 @@ const addNewSharedExpense = async (req, res) => {
     }
 
     try {
-        await Expense.addExpense(newExpense);
+        await Expense.addExpense(newExpense, req.supabase);
         res.status(201).json({ message: 'New shared expense added successfully'})
     } catch(error) {
         res.status(500).json({ error: error.message });

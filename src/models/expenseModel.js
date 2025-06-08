@@ -1,10 +1,7 @@
-const { supabase } = require('../supabaseClient')
-
 const Expense = {
 
     // Filter expenses by user id or shared account id
-    filterById: async (id, idType) => {
-
+    filterById: async (id, idType, supabase) => {
         const columnName = idType === 'user' ? 'user_id' : 'shared_account_id' 
 
         const { data, error } = await supabase
@@ -35,10 +32,11 @@ const Expense = {
         return data;
     },
 
-    addExpense: async (expense) => {
+    addExpense: async (expense, supabase) => {
         const { data, error } = await supabase
             .from('expenses')
             .insert(expense)
+            .select();
 
         if(error) {
             throw new Error(error.message);

@@ -1,13 +1,9 @@
-const { supabase } = require('../supabaseClient')
-
 const User = {
-
-    // Inserts new user data to Supabase
-    createProfile: async (userData) => {
+    createProfile: async (profileData, supabase) => {
         const { data, error } = await supabase
             .from('profiles')
-            .insert(userData)
-            .select()
+            .insert(profileData)
+            .select();
 
         if(error) {
             throw new Error(error.message);
@@ -16,19 +12,18 @@ const User = {
         return data;
     },
 
-    findByUserId: async (userId) => {
+    findByUserId: async (userId, supabase) => {
         const { data, error } = await supabase
             .from('profiles')
             .select('*')
             .eq('user_id', userId);
 
         if (error) {
-            console.error('Error fetching user profile:', error);
             return null;
         }
 
         return data;
     }
-}
+};
 
 module.exports = User;

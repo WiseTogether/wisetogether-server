@@ -105,6 +105,47 @@ const addNewSharedExpense = async (req, res) => {
     }
 }
 
+const updateExpense = async (req, res) => {
+    try {
+        const { expenseId } = req.params;
+        const { date, amount, category, description, splitType, splitDetails } = req.body;
 
+        if (!expenseId) {
+            return res.status(400).json({ error: 'Expense ID is required' });
+        }
 
-module.exports = { fetchAllExpensesById, addNewPersonalExpense, addNewSharedExpense };
+        // Build update object with only provided fields
+        const updatedData = {};
+        if (date) updatedData.date = date;
+        if (amount) updatedData.amount = amount;
+        if (category) updatedData.category = category;
+        if (description) updatedData.description = description;
+        if (splitType) updatedData.split_type = splitType;
+
+        // Handle split details if amount or split type changes
+        if (splitType === 'equal' && amount) {
+            updatedData.split_details = {
+                user1_amount: Math.round(0.50 * amount),
+                user2_amount: Math.round(0.50 * amount)
+            };
+        } else if (splitType === 'percentage' && splitDetails && amount) {
+            const { user1, user2 } = splitDetails;
+            updatedData.split_details = {
+                user1_amount: Math.round((user1 / 100) * amount),
+                user2_amount: Math.round((user2 / 100) * amount)
+            };
+        }
+
+        const updatedExpense = await Expense.updateExpense(expenseId, updatedData, req.supabase);
+
+        if (!updatedExpense) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
+
+        res.status(200).json(updatedExpense);
+    } catch(error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { fetchAllExpensesById, addNewPersonalExpense, addNewSharedExpense, updateExpense };

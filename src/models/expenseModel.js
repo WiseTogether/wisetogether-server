@@ -42,7 +42,22 @@ const Expense = {
             throw new Error(error.message);
         }
 
-        return data;
+        if (data && data.length > 0) {
+            const newExpense = data[0];
+            return {
+                id: newExpense.uuid,
+                sharedAccountId: newExpense.shared_account_id,
+                userId: newExpense.user_id,
+                date: newExpense.date,
+                amount: newExpense.amount,
+                category: newExpense.category,
+                description: newExpense.description,
+                splitType: newExpense.split_type,
+                splitDetails: newExpense.split_details,
+            };
+        }
+
+        return null;
     },
 
     updateExpense: async (expenseId, updatedData, supabase) => {

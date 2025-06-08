@@ -46,36 +46,41 @@ const fetchAllExpensesById = async (req, res) => {
 }
 
 const addNewPersonalExpense = async (req, res) => {
-
     const { userId, date, amount, category, description } = req.body;
 
     if (!userId || !date || !amount || !category) {
         return res.status(400).json({ error: 'Required fields are missing' });
     }
 
-    let newExpense = { 'user_id':userId, date, amount, category };
+    let newExpense = { 'user_id': userId, date, amount, category };
 
     if (description) {
         newExpense.description = description;
     }
 
     try {
-        await Expense.addExpense(newExpense, req.supabase);
-        res.status(201).json({ message: 'New personal expense added successfully'})
+        const createdExpense = await Expense.addExpense(newExpense, req.supabase);
+        res.status(201).json(createdExpense);
     } catch(error) {
         res.status(500).json({ error: error.message });
     }
-}
+};
 
 const addNewSharedExpense = async (req, res) => {
-
     const { sharedAccountId, userId, date, amount, category, description, splitType, splitDetails } = req.body;
 
     if (!sharedAccountId || !userId || !date || !amount || !category || !splitType) {
         return res.status(400).json({ error: 'Required fields are missing' });
     }
 
-    let newExpense = { 'user_id':userId, 'shared_account_id':sharedAccountId, date, amount, category, 'split_type':splitType };
+    let newExpense = { 
+        'user_id': userId, 
+        'shared_account_id': sharedAccountId, 
+        date, 
+        amount, 
+        category, 
+        'split_type': splitType 
+    };
     
     if (description) {
         newExpense.description = description;
@@ -90,7 +95,6 @@ const addNewSharedExpense = async (req, res) => {
 
     if (splitType === 'percentage' && splitDetails) {
         const { user1, user2 } = splitDetails;
-
         newExpense.split_details = {
             user1_amount: Math.round((user1 / 100) * amount),
             user2_amount: Math.round((user2 / 100) * amount)
@@ -98,12 +102,12 @@ const addNewSharedExpense = async (req, res) => {
     }
 
     try {
-        await Expense.addExpense(newExpense, req.supabase);
-        res.status(201).json({ message: 'New shared expense added successfully'})
+        const createdExpense = await Expense.addExpense(newExpense, req.supabase);
+        res.status(201).json(createdExpense);
     } catch(error) {
         res.status(500).json({ error: error.message });
     }
-}
+};
 
 const updateExpense = async (req, res) => {
     try {

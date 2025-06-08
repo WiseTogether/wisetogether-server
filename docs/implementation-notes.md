@@ -77,3 +77,38 @@ To test the implementation:
 
 ---
 
+<<<<<<< HEAD
+=======
+## Feat: Refactor Expense Creation Response
+**Issue:** [#6](https://github.com/WiseTogether/wisetogether-server/issues/6)
+
+### Problem
+Expense creation endpoints only return success messages without the created expense data, requiring additional API calls to get the new expense details.
+
+### Implementation
+1. Updated `expenseModel.js`:
+   - Modified `addExpense` function to return formatted expense data
+   - Added consistent data formatting with other expense endpoints
+   - Maintained error handling
+
+2. Updated `expenseController.js`:
+   - Modified `addNewPersonalExpense` to return created expense
+   - Modified `addNewSharedExpense` to return created expense
+   - Maintained existing validation and error handling
+
+### API Endpoints
+- POST `/expenses/personal`
+  - Returns: Created expense object with all fields
+- POST `/expenses/shared`
+  - Returns: Created expense object with all fields including split details
+
+### Testing
+To test the implementation:
+1. Create a new personal or shared expense
+2. Verify response contains complete expense object
+3. Verify all fields are correctly formatted
+4. For shared expenses, verify split details are included
+
+---
+
+>>>>>>> d13fd43 (refactor: return the created expense data in POST/expenses response)

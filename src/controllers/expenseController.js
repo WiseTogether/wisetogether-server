@@ -152,4 +152,19 @@ const updateExpense = async (req, res) => {
     }
 };
 
-module.exports = { fetchAllExpensesById, addNewPersonalExpense, addNewSharedExpense, updateExpense };
+const deleteExpense = async (req, res) => {
+    try {
+        const { expenseId } = req.params;
+
+        if (!expenseId) {
+            return res.status(400).json({ error: 'Expense ID is required' });
+        }
+
+        await Expense.deleteExpense(expenseId, req.supabase);
+        res.status(200).json({ message: 'Expense deleted successfully' });
+    } catch(error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { fetchAllExpensesById, addNewPersonalExpense, addNewSharedExpense, updateExpense, deleteExpense };

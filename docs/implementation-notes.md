@@ -77,8 +77,6 @@ To test the implementation:
 
 ---
 
-<<<<<<< HEAD
-=======
 ## Feat: Refactor Expense Creation Response
 **Issue:** [#6](https://github.com/WiseTogether/wisetogether-server/issues/6)
 
@@ -111,4 +109,31 @@ To test the implementation:
 
 ---
 
->>>>>>> d13fd43 (refactor: return the created expense data in POST/expenses response)
+## Feat: Implement Delete Transaction API Endpoint
+**Issue:** [#3](https://github.com/WiseTogether/wisetogether-server/issues/3)
+
+### Problem
+No functionality to delete expenses. Users need the ability to remove expenses from their records.
+
+### Implementation
+1. Added `deleteExpense` function to `expenseModel.js`:
+   - Deletes expense by UUID
+   - Returns true on successful deletion
+   - Handles error cases appropriately
+
+2. Added `deleteExpense` controller to `expenseController.js`:
+   - Validates expense ID parameter
+   - Returns success message on deletion
+   - Maintains consistent error handling
+
+3. Updated `expenseRoutes.js` to:
+   - Add DELETE endpoint for expense deletion
+   - Route: `/expenses/:expenseId`
+
+### Testing
+To test the implementation:
+1. Send DELETE request to `/expenses/:expenseId`
+2. Verify expense is removed from database
+
+---
+

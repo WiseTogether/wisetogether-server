@@ -87,6 +87,19 @@ const Expense = {
         }
 
         return null;
+    },
+
+    deleteExpense: async (expenseId, supabase) => {
+        const { error } = await supabase
+            .from('expenses')
+            .delete()
+            .eq('uuid', expenseId);
+
+        if(error) {
+            throw new Error(error.message);
+        }
+
+        return true;
     }
     
 }

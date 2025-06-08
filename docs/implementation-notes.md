@@ -46,3 +46,34 @@ To test the implementation:
 
 ---
 
+## Feat: Implement Edit Transaction API Endpoint
+**Issue:** [#1](https://github.com/WiseTogether/wisetogether-server/issues/1)
+
+### Problem
+No logic for editing expenses. Users need the ability to modify existing expense details.
+
+### Implementation
+1. Added `updateExpense` function to `expenseModel.js`:
+   - Updates expense by UUID
+   - Returns formatted expense data
+   - Handles error cases appropriately
+
+2. Added `updateExpense` controller to `expenseController.js`:
+   - Supports partial updates of expense fields
+   - Validates required parameters
+   - Automatically recalculates split amounts when amount or split type changes
+   - Returns updated expense data
+
+3. Updated `expenseRoutes.js` to:
+   - Add PATCH endpoint for expense updates
+   - Route: `/expenses/:expenseId`
+
+### Testing
+To test the implementation:
+1. Send PATCH request to `/expenses/:expenseId`
+2. Include any combination of updatable fields in request body
+3. For split expenses, amount or split type changes will trigger automatic recalculation
+4. Verify response contains updated expense data
+
+---
+

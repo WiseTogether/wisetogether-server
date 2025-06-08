@@ -43,6 +43,35 @@ const Expense = {
         }
 
         return data;
+    },
+
+    updateExpense: async (expenseId, updatedData, supabase) => {
+        const { data, error } = await supabase
+            .from('expenses')
+            .update(updatedData)
+            .eq('uuid', expenseId)
+            .select();
+
+        if(error) {
+            throw new Error(error.message);
+        }
+
+        if (data && data.length > 0) {
+            const expense = data[0];
+            return {
+                id: expense.uuid,
+                sharedAccountId: expense.shared_account_id,
+                userId: expense.user_id,
+                date: expense.date,
+                amount: expense.amount,
+                category: expense.category,
+                description: expense.description,
+                splitType: expense.split_type,
+                splitDetails: expense.split_details,
+            };
+        }
+
+        return null;
     }
     
 }

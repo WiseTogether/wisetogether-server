@@ -1,4 +1,5 @@
 const Expense = require('../models/expenseModel');
+const { parseReceipt } = require('../services/receiptParserService');
 
 // Fetch all expenses by user id or shared account id
 const fetchAllExpensesById = async (req, res) => {
@@ -167,4 +168,19 @@ const deleteExpense = async (req, res) => {
     }
 };
 
-module.exports = { fetchAllExpensesById, addNewPersonalExpense, addNewSharedExpense, updateExpense, deleteExpense };
+// Parse a receipt image and return structured data
+async function parseReceiptController(req, res) {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image file provided' });
+        }
+
+        const parsedData = await parseReceipt(req.file.buffer);
+        res.json(parsedData);
+    } catch (error) {
+        console.error('Error in parseReceiptController:', error);
+        res.status(500).json({ error: 'Failed to parse receipt' });
+    }
+}
+
+module.exports = { fetchAllExpensesById, addNewPersonalExpense, addNewSharedExpense, updateExpense, deleteExpense, parseReceipt: parseReceiptController };

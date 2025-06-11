@@ -137,3 +137,24 @@ To test the implementation:
 
 ---
 
+## Feat: Implement Receipt OCR + Parsing
+**Issue:** [#9](https://github.com/WiseTogether/wisetogether-server/issues/9)
+
+### Problem
+No backend support for processing uploaded receipt images. This feature is essential for enabling a smoother and more automated expense entry workflow.
+
+### Implementation
+1. Route & Controller
+   - `POST /expenses/parse-receipt` endpoint with `multer` middleware for image upload.
+   - Controller (`parseReceipt`) validates the file, handles errors, and returns structured data.
+   - 5MB file size limit enforced; image is passed as a buffer (no file system writes).
+
+2. Receipt Parsing Service
+   - OCR: Uses `tesseract.js` with `'jpn'` language code to extract text from the image buffer.
+   - AI Parsing: Sends raw text to OpenAI (`gpt-3.5-turbo`) to extract merchant name, total amount, transaction date, and category
+
+### Notes
+- Japanese OCR enabled via `'jpn'` trained data.
+- Added new environment variable `OPENAI_API_KEY=your-openai-api-key`
+
+---

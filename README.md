@@ -9,6 +9,7 @@ It handles all server-side logic, authentication, and data interactions with Sup
 - Node.js / Express
 - Supabase (as the database + auth)
 - RESTful API
+- Tesseract and OpenAI (OCR + receipt parsing)
 
 ## Installation
 
@@ -34,8 +35,9 @@ Before running the app locally, create a `.env` file in the root of your project
 ```
 SUPABASE_URL=your-supabase-project-url
 SUPABASE_ANON_KEY=your-supabase-anon-key
+OPENAI_API_KEY=your-openai-api-key
 ```
-You can find these values in your Supabase project settings.
+You can find these values in your Supabase project settings and OpenAI dashboard.
 
 ### Running the Development Server
 
